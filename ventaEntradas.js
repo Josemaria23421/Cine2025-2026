@@ -41,23 +41,27 @@ function pintarButacas(){
     contenedor.innerHTML="<br>";
     contenedor.innerHTML+="<h3>Sala De Cine</h3>"
     for (i=1;i<=numButacas;i++){
-            if (vendidas.includes(i)){
-                contenedor.innerHTML+="<button id='butaca"+i+"' class='ocupado'>"+i+"</button> ";
-            }
-            else{
-                contenedor.innerHTML+="<button id='butaca"+i+"' class='libre' onclick='seleccionar();' title='Seleccionar asiento'>"+i+"</button> ";
-            }
-            if (i%15==0){
-                contenedor.innerHTML+="<br>";
-            }
-        }
-        if (numButacas==vendidas.length){
-            contenedor.innerHTML+="<br><img  src='img/soldout.png' alt='Sin localidades'title='Localidades agotadas. Seleccione otra película.'>"
+        if (vendidas.includes(i)){
+            contenedor.innerHTML+="<button id='butaca"+i+"' class='ocupado'>"+i+"</button> ";
         }
         else{
-            contenedor.innerHTML+="<br><br><button id='btnConfirm' onclick='confirmarVenta();' title='Comprar entradas'>Comprar</button>"
+            contenedor.innerHTML+="<button id='butaca"+i+"' class='libre' onclick='seleccionar();' title='Seleccionar asiento'>"+i+"</button> ";
         }
+        if (i%15==0){
+            contenedor.innerHTML+="<br>";
+        }
+    }
+    if (numButacas==vendidas.length){
+        contenedor.innerHTML+="<br><img  src='img/soldout.png' alt='Sin localidades'title='Localidades agotadas. Seleccione otra película.'>"
+    }
+    else{
+        contenedor.innerHTML+="<br><br><button id='btnConfirm' onclick='confirmarVenta();' title='Comprar entradas'>Comprar</button>"
+    }
+
+    // 🔹 Aquí llamamos a la comprobación
+    comprobarAforo();
 }
+
 
 /*Cuando se selecciona una localidad se comprueba si esta libre y se guarda o se borra
 de los arrays de control*/
@@ -121,4 +125,32 @@ function imprimirTicket(){
     var miEntrada=window.open("ticket.html",'Ticket',params)
     
 }
+
+function comprobarAforo() {
+    // Calculamos porcentaje de ocupación
+    var ocupadas = vendidas.length;
+    var capacidad = numButacas;
+    var porcentaje = (ocupadas / capacidad) * 100;
+
+    // Eliminamos aviso previo si ya existe
+    var avisoPrevio = document.getElementById("aviso-aforo");
+    if (avisoPrevio) {
+        avisoPrevio.remove();
+    }
+
+    // Si supera el 50%, mostramos un warning
+    if (porcentaje >= 50) {
+        var aviso = document.createElement("div");
+        aviso.id = "aviso-aforo";
+        aviso.style.backgroundColor = "orange";
+        aviso.style.color = "white";
+        aviso.style.padding = "10px";
+        aviso.style.marginTop = "15px";
+        aviso.style.textAlign = "center";
+        aviso.style.fontWeight = "bold";
+        aviso.innerText = "⚠ Atención: La sala está al " + Math.floor(porcentaje) + "% de su capacidad";
+        contenedor.appendChild(aviso);
+    }
+}
+
     
